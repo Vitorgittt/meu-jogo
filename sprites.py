@@ -102,11 +102,75 @@ MATRIZ_ORBE = [
     "...P..."
 ]
 
+# 5. Boss 1: Omen (Sombra / Teleporte)
+PALETA_OMEN = {
+    'P': (75, 0, 130),    # Roxo Escuro
+    'C': (0, 191, 255),   # Olhos Azuis Brilhantes
+    'D': (20, 20, 30)     # Capuz Sombrio
+}
+MATRIZ_OMEN = [
+    "....DDDDDD....",
+    "...DDDDDDDD...",
+    "..DDPPPPPPDD..",
+    "..DPCCCCCCPD..",
+    "..DPPDDDDPPD..",
+    ".DDDDDDDDDDDD.",
+    "DDDDPPPPPPDDDD",
+    "DD.DPPPPPPD.DD",
+    "...DDDDDDDD...",
+    "..DD..DD..DD.."
+]
+
+# 6. Boss 2: Reyna (Imperatriz / Orbes Roxos)
+PALETA_REYNA = {
+    'R': (199, 21, 133),  # Magenta
+    'P': (128, 0, 128),   # Roxo
+    'C': (255, 182, 193), # Olhos Brilhantes
+    'D': (35, 15, 45)     # Armadura
+}
+MATRIZ_REYNA = [
+    "...RRRRRRRR...",
+    "..RRRRRRRRRR..",
+    ".RRPCCCCCCPRR.",
+    ".RRPPPPPPPPRR.",
+    "..DDDDDDDDDD..",
+    ".PPRRRRRRRRPP.",
+    "PP.DDDDDDDD.PP",
+    "...DDDDDDDD...",
+    "...PP....PP..."
+]
+
+# 7. Boss 3: Spike Gigante (Bomba Nuclear)
+PALETA_SPIKE = {
+    'D': (45, 45, 55),
+    'C': (0, 255, 255),
+    'V': (255, 40, 40)
+}
+MATRIZ_SPIKE = [
+    ".....VV.....",
+    "....DDDD....",
+    "...DCCCDD...",
+    "..DCDVVDCd..",
+    ".DDDDVVDDDD.",
+    ".DCCCCCCCCD.",
+    ".DDDDDDDDDD.",
+    "..DD....DD.."
+]
+
+
 # Dicionario global que guarda os sprites prontos
 SPRITES = {}
+
 
 def inicializar_sprites():
     SPRITES["clove"] = carregar_ou_gerar_sprite("clove.png", (48, 48), MATRIZ_CLOVE, PALETA_CLOVE, escala=3)
     SPRITES["bot"] = carregar_ou_gerar_sprite("bot.png", (44, 44), MATRIZ_BOT, PALETA_BOT, escala=3)
     SPRITES["lag"] = carregar_ou_gerar_sprite("lag.png", (56, 56), MATRIZ_LAG, PALETA_LAG, escala=5)
     SPRITES["orbe"] = carregar_ou_gerar_sprite("orbe.png", (24, 24), MATRIZ_ORBE, PALETA_ORBE, escala=3)
+    
+    # Sprites dos Novos Chefoes
+    SPRITES["boss_omen"] = carregar_ou_gerar_sprite("boss_omen.png", (96, 96), MATRIZ_OMEN, PALETA_OMEN, escala=6)
+    SPRITES["boss_reyna"] = carregar_ou_gerar_sprite("boss_reyna.png", (96, 96), MATRIZ_REYNA, PALETA_REYNA, escala=6)
+    SPRITES["boss_spike"] = carregar_ou_gerar_sprite("boss_spike.png", (100, 100), MATRIZ_SPIKE, PALETA_SPIKE, escala=7)
+
+

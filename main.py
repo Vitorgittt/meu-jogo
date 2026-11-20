@@ -3,7 +3,7 @@ import random
 import math
 from settings import *
 from player import Jogadora, Projetil
-from enemies import Inimigo, OrbeEssencia
+from enemies import Inimigo, OrbeEssencia, ProjetilInimigo
 from particles import Particula, SmokeClove
 from sprites import inicializar_sprites
 
@@ -43,6 +43,7 @@ def main():
     player = Jogadora()
     projeteis = []
     inimigos = []
+    projeteis_inimigos = []
     orbes = []
     particulas = []
     smokes = []
@@ -109,9 +110,13 @@ def main():
                     elif evento.key == pygame.K_RETURN:
                         onda += 1
                         inimigos_para_spawnar = 8 + (onda * 3)
+                        timer_spawn = 10
                         if onda % 5 == 0:
-                            inimigos.append(Inimigo(onda, "boss"))
+                            chefoes = ["boss_omen", "boss_reyna", "boss_spike"]
+                            indice_boss = ((onda // 5) - 1) % len(chefoes)
+                            inimigos.append(Inimigo(onda, chefoes[indice_boss]))
                         estado = "JOGANDO"
+
 
                 elif estado == "GAMEOVER" and evento.key == pygame.K_r:
                     player = Jogadora()
@@ -196,17 +201,29 @@ def main():
                             inimigos.remove(ini)
                         break
 
-            # Atualiza Inimigos e Dano na Jogadora
+                        # Atualiza Inimigos e Dano na Jogadora
             for ini in inimigos[:]:
-                ini.mover(player, smokes)
+                ini.mover(player, smokes, projeteis_inimigos)
                 if math.hypot(player.x - ini.x, player.y - ini.y) < player.raio + ini.raio:
                     player.receber_dano(ini.dano)
                     criar_explosao(particulas, player.x, player.y, VERMELHO_ALERTA, 15)
-                    if ini.tipo != "boss":
+                    if not ini.eh_boss:
                         inimigos.remove(ini)
                     else:
                         ini.x -= (player.x - ini.x) * 1.5
                         ini.y -= (player.y - ini.y) * 1.5
+
+            # Atualiza Projeteis dos Chefoes
+            for pi in projeteis_inimigos[:]:
+                pi.atualizar()
+                if pi.x < 0 or pi.x > LARGURA or pi.y < 0 or pi.y > ALTURA:
+                    projeteis_inimigos.remove(pi)
+                    continue
+                if math.hypot(player.x - pi.x, player.y - pi.y) < player.raio + pi.raio:
+                    player.receber_dano(pi.dano)
+                    criar_explosao(particulas, player.x, player.y, pi.cor, 12)
+                    projeteis_inimigos.remove(pi)
+
 
                     # CHECA MORTE OU ULTIMATE DA CLOVE ("AINDA NAO MORRI!")
                     if player.vida <= 0:
