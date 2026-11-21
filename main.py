@@ -71,7 +71,6 @@ def main():
         relogio.tick(FPS)
         mouse_pos = pygame.mouse.get_pos()
 
-        # --- EVENTOS DE TECLADO E MOUSE ---
         for evento in pygame.event.get():
             if evento.type == pygame.QUIT:
                 rodando = False
@@ -81,6 +80,11 @@ def main():
                 if evento.key == pygame.K_F11:
                     tela_cheia_atual = not tela_cheia_atual
                     tela = pygame.display.set_mode((LARGURA, ALTURA), pygame.FULLSCREEN if tela_cheia_atual else 0)
+
+                # M muta/desmuta a musica e os sons (Fica aqui dentro!)
+                if evento.key == pygame.K_m:
+                    audio.alternar_mudo()
+
 
                 if estado == "MENU" and evento.key == pygame.K_RETURN:
                     estado = "JOGANDO"
@@ -164,10 +168,6 @@ def main():
             botoes_mouse = pygame.mouse.get_pressed()
 
             player.mover(teclas)
-
-            if evento.key == pygame.K_m:
-                audio.alternar_mudo()
-
 
             # Tiro continuo segurando o botao esquerdo do mouse
             if botoes_mouse[0] and player.timer_tiro == 0:
