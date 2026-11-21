@@ -6,6 +6,7 @@ from player import Jogadora, Projetil
 from enemies import Inimigo, OrbeEssencia, ProjetilInimigo
 from particles import Particula, SmokeClove
 from sprites import inicializar_sprites
+from audio import GerenciadorAudio
 
 pygame.init()
 
@@ -20,6 +21,9 @@ relogio = pygame.time.Clock()
 fonte_titulo = pygame.font.SysFont("Courier New", 48, bold=True)
 fonte_media = pygame.font.SysFont("Courier New", 24, bold=True)
 fonte_pequena = pygame.font.SysFont("Courier New", 18)
+
+audio = GerenciadorAudio()
+audio.iniciar_musica()
 
 def desenhar_grade(tela):
     tela.fill(PRETO_FUNDO)
@@ -87,11 +91,15 @@ def main():
                         smokes.append(SmokeClove(mouse_pos[0], mouse_pos[1]))
                         player.cooldown_smoke = 240 # 4 segundos de recarga
                         criar_explosao(particulas, mouse_pos[0], mouse_pos[1], CLOVE_ROXO, 20)
+                        # Dentro do if evento.key == pygame.K_q ...
+                        audio.tocar_efeito("smoke")
 
                     # Habilidade E: Vitalidade (Vida temporaria apos abate)
                     if evento.key == pygame.K_e:
                         if player.usar_vitalidade():
                             criar_explosao(particulas, player.x, player.y, CLOVE_ROSA, 25)
+                            # Dentro do if player.usar_vitalidade():
+                            audio.tocar_efeito("vitalidade")
 
                 elif estado == "LOJA":
                     if evento.key == pygame.K_1 and cristais >= 50:
@@ -115,6 +123,7 @@ def main():
                             chefoes = ["boss_omen", "boss_reyna", "boss_spike"]
                             indice_boss = ((onda // 5) - 1) % len(chefoes)
                             inimigos.append(Inimigo(onda, chefoes[indice_boss]))
+                            audio.tocar_efeito("compra")
                         estado = "JOGANDO"
 
 
@@ -156,10 +165,15 @@ def main():
 
             player.mover(teclas)
 
+            if evento.key == pygame.K_m:
+                audio.alternar_mudo()
+
+
             # Tiro continuo segurando o botao esquerdo do mouse
             if botoes_mouse[0] and player.timer_tiro == 0:
                 projeteis.append(Projetil(player.x, player.y, mouse_pos[0], mouse_pos[1], player.dano))
                 player.timer_tiro = player.cadencia_tiro
+                audio.tocar_efeito("tiro")
 
             # Spawn progressivo de inimigos na onda
             if inimigos_para_spawnar > 0:
@@ -201,7 +215,7 @@ def main():
                             inimigos.remove(ini)
                         break
 
-                        # Atualiza Inimigos e Dano na Jogadora
+            # Atualiza Inimigos e Dano na Jogadora
             for ini in inimigos[:]:
                 ini.mover(player, smokes, projeteis_inimigos)
                 if math.hypot(player.x - ini.x, player.y - ini.y) < player.raio + ini.raio:
@@ -227,6 +241,7 @@ def main():
 
                     # CHECA MORTE OU ULTIMATE DA CLOVE ("AINDA NAO MORRI!")
                     if player.vida <= 0:
+                        audio.tocar_efeito("explosao")
                         if player.ult_carga >= 100:
                             player.ult_carga = 0
                             player.vida = int(player.vida_max * 0.75)
@@ -236,6 +251,7 @@ def main():
                                 ang_empurrao = math.atan2(outro.y - player.y, outro.x - player.x)
                                 outro.x += math.cos(ang_empurrao) * 180
                                 outro.y += math.sin(ang_empurrao) * 180
+                                audio.tocar_efeito("ult")                               
                         else:
                             frase_morte = random.choice(frases_skill_issue)
                             estado = "GAMEOVER"
